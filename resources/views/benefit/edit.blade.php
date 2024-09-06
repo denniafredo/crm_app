@@ -727,11 +727,12 @@
             var transportPerBulan = parseInt(transport) * parseInt(hariKerja);
             var makanPerBulan = parseInt(makan) * parseInt(hariKerja);
 
-            var BPJSKesehatanPendapatan = parseInt(gajiPokok) * 0.04;
-            var BPJSJHTPendapatan = parseInt(gajiPokok) * 0.037;
-            var BPJSJKKPendapatan = parseInt(gajiPokok) * 0.0054;
-            var BPJSJKMPendapatan = parseInt(gajiPokok) * 0.003;
-            var BPJSPensiunPendapatan = parseInt(gajiPokok) * 0.02;
+            var BPJSKesehatanPendapatan = parseInt(parseInt(gajiPokok) * 0.04);
+            var BPJSJHTPendapatan = parseInt(parseInt(gajiPokok) * 0.037);
+            var BPJSJKKPendapatan = parseInt(parseInt(gajiPokok) * 0.0054);
+            var BPJSJKMPendapatan = parseInt(parseInt(gajiPokok) * 0.003);
+            var BPJSPensiunPendapatan = parseInt(parseInt(gajiPokok) * 0.02);
+
             var totalPendapatan = parseInt(gajiPokok) + parseInt(kinerja) + parseInt(transportPerBulan) + parseInt(makanPerBulan) +
                 parseInt(BPJSKesehatanPendapatan) + parseInt(BPJSJHTPendapatan) + parseInt(BPJSJKKPendapatan) + parseInt(BPJSJKMPendapatan) + parseInt(BPJSPensiunPendapatan) + +parseInt(lembur) + parseInt(pendapatan_lainnya);
 
@@ -770,18 +771,6 @@
             var burden = document.getElementById('burden').value.replace(/,/g, '');
             var potongan_pph_21 = document.getElementById('potongan_pph_21').value.replace(/,/g, '');
 
-            // var persenBPJSPPH;
-            // var radioButtons = document.getElementsByName('persenpph');
-
-            // for (var i = 0; i < radioButtons.length; i++) {
-            //     if (radioButtons[i].checked) {
-            //         persenBPJSPPH = radioButtons[i].value;
-            //         break;
-            //     }
-            // }
-            // if (persenBPJSPPH === undefined) {
-            //     persenBPJSPPH = 5;
-            // }
 
             var totalPotongan = parseInt(pot_absensi) + parseInt(pot_transport) + parseInt(pot_makan) + parseInt(burden) + parseInt(pot_bpjs_kes) + parseInt(pot_bpjs_tk) +
                 parseInt(BPJSKesehatanPendapatan) + parseInt(BPJSJHTPendapatan) + parseInt(BPJSJKKPendapatan) + parseInt(BPJSJKMPendapatan) + parseInt(BPJSPensiunPendapatan)

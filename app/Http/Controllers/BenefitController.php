@@ -57,37 +57,76 @@ class BenefitController extends Controller
 
     public function update(Request $request, $employmentNik)
     {
+        // Validate input
         $request->validate([
             'basic_salary' => 'required',
         ]);
+
+        // Find employment record
         $employment = Employment::where('nik', $employmentNik)->first();
         if (!$employment) {
             return redirect()->back()
                 ->with('error', 'Data karyawan tidak ditemukan');
         }
-        $benefit = Benefit::where('employment_id', $employment->id)->first();
-        if (!$employment) {
-            return redirect()->back()
-                ->with('error', 'Data benefit tidak ditemukan');
+
+        // Find all benefit records for the given employment and period
+        $benefits = Benefit::where('employment_id', $employment->id)
+            ->where('periode', $request['periode'])->get();
+
+        // If benefits exist, delete them all
+        if ($benefits->count() > 0) {
+            Benefit::where('employment_id', $employment->id)
+                ->where('periode', $request['periode'])
+                ->delete();
         }
 
-        $request['basic_salary'] = str_replace(',', '', $request['basic_salary']);
-        $request['fixed_allowances'] = str_replace(',', '', $request['fixed_allowances']);
-        $request['meal_allowances'] = str_replace(',', '', $request['meal_allowances']);
-        $request['transport_allowances'] = str_replace(',', '', $request['transport_allowances']);
-        $request['overtime_allowances'] = str_replace(',', '', $request['overtime_allowances']);
-        $request['other_allowances'] = str_replace(',', '', $request['other_allowances']);
-        $request['performance_allowances'] = str_replace(',', '', $request['performance_allowances']);
-        $request['burden'] = str_replace(',', '', $request['burden']);
-        $request['potongan_pph_21'] = str_replace(',', '', $request['potongan_pph_21']);
-        $request['leave_rights'] = str_replace(',', '', $request['leave_rights']);
-        $request['leave_rights'] = str_replace(',', '', $request['leave_rights']);
-        $request['leave_rights'] = str_replace(',', '', $request['leave_rights']);
-        $benefit->update($request->all());
+        $data = $request->all();
 
+// Add missing fields with defaults if not present in the request
+        $data['no_account'] = $request->input('no_account', '');
+        $data['periode'] = $request->input('periode', '');
+        $data['basic_salary'] = str_replace(',', '', $request->input('basic_salary', '0'));
+        $data['day_of_works'] = $request->input('day_of_works', '0');
+        $data['performance_allowances'] = str_replace(',', '', $request->input('performance_allowances', '0'));
+        $data['overtime_allowances'] = str_replace(',', '', $request->input('overtime_allowances', '0'));
+        $data['other_allowances'] = str_replace(',', '', $request->input('other_allowances', '0'));
+        $data['transport_allowances'] = str_replace(',', '', $request->input('transport_allowances', '0'));
+        $data['transport_allowances_month'] = str_replace(',', '', $request->input('transport_allowances_month', '0'));
+        $data['meal_allowances'] = str_replace(',', '', $request->input('meal_allowances', '0'));
+        $data['meal_allowances_month'] = str_replace(',', '', $request->input('meal_allowances_month', '0'));
+        $data['pdpt_kesehatan'] = str_replace(',', '', $request->input('pdpt_kesehatan', '0'));
+        $data['pdpt_jht'] = str_replace(',', '', $request->input('pdpt_jht', '0'));
+        $data['pdpt_jkk'] = str_replace(',', '', $request->input('pdpt_jkk', '0'));
+        $data['pdpt_jkm'] = str_replace(',', '', $request->input('pdpt_jkm', '0'));
+        $data['pdpt_pensiun'] = str_replace(',', '', $request->input('pdpt_pensiun', '0'));
+        $data['total_pendapatan'] = str_replace(',', '', $request->input('total_pendapatan', '0'));
+        $data['leave_rights'] = str_replace(',', '', $request->input('leave_rights', '0'));
+        $data['leaves'] = str_replace(',', '', $request->input('leaves', '0'));
+        $data['hari_masuk'] = $request->input('hari_masuk', '0');
+        $data['sick_leaves'] = $request->input('sick_leaves', '0');
+        $data['absence_leaves'] = $request->input('absence_leaves', '0');
+        $data['pot_absensi'] = str_replace(',', '', $request->input('pot_absensi', '0'));
+        $data['pot_transport'] = str_replace(',', '', $request->input('pot_transport', '0'));
+        $data['pot_makan'] = str_replace(',', '', $request->input('pot_makan', '0'));
+        $data['burden'] = str_replace(',', '', $request->input('burden', '0'));
+        $data['pot_bpjs_kes'] = str_replace(',', '', $request->input('pot_bpjs_kes', '0'));
+        $data['pot_bpjs_tk'] = str_replace(',', '', $request->input('pot_bpjs_tk', '0'));
+        $data['sub_bpjs_kes'] = str_replace(',', '', $request->input('sub_bpjs_kes', '0'));
+        $data['sub_bpjs_tk'] = str_replace(',', '', $request->input('sub_bpjs_tk', '0'));
+        $data['potongan_pph_21'] = str_replace(',', '', $request->input('potongan_pph_21', '0'));
+        $data['total_potongan'] = str_replace(',', '', $request->input('total_potongan', '0'));
+        $data['thp'] = str_replace(',', '', $request->input('thp', '0'));
+        $data['fixed_allowances'] = str_replace(',', '', $request->input('fixed_allowances', '0'));
+
+        $data['employment_id'] = $employment->id;
+
+        Benefit::create($data);
+
+        // Return success message
         return redirect()->back()
             ->with('success', 'Data Benefit berhasil di update');
     }
+
 
     public function destroy($employmentNik)
     {
